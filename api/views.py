@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.forms.models import model_to_dict
 import json
+from django.http import Http404 
+from django.shortcuts import get_object_or_404
 from api.serializers import ProductSerializer
 
 
@@ -26,7 +28,7 @@ def api_home(request):
     return Response({"invalid" :"invalid data"})
 
 
-class ProductCreateAPIView(generics.CreateAPIView):
+class ProductListCreateAPIView(generics.ListCreateAPIView):
     queryset = TblProduct.objects.all()
     serializer_class = ProductSerializer
 
@@ -43,3 +45,35 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
 
     queryset = TblProduct.objects.all()
     serializer_class = ProductSerializer
+
+
+class ProductListAPIView(generics.ListAPIView):
+    
+    queryset = TblProduct.objects.all()
+    serializer_class = ProductSerializer
+
+@api_view(['POST','GET'])
+def get_alt_view(request,pk=None):
+
+    if request.method == "GET":
+        if pk is not None:
+
+            obj = get_object_or_404(TblProduct,pk=pk)
+            data = ProductSerializer(obj,many=False).data
+            return Response()
+
+        queryset = TblProduct.objects.all()
+        data = ProductSerializer(queryset,many=True).data
+        return Response(data)
+
+    if request.method == "POST":
+
+        product_serializer = ProductSerializer(data=request.data)
+        if product_serializer.is_valid(raise_exception=True):
+            title = product_serializer.validated_data.get('title')
+            content = product_serializer.validated_data.get('content')
+            if content is None:
+                content = title
+            product_serializer.save(content=content)
+            return Response(product_serializer.data)
+        return Response({"invalid" :"invalid data"},status=400)
