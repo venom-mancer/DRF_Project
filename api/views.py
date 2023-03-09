@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from api.models import TblProduct
-from rest_framework import generics
+from rest_framework import generics , mixins
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.forms.models import model_to_dict
@@ -11,7 +11,14 @@ from django.shortcuts import get_object_or_404
 from api.serializers import ProductSerializer
 
 
+class ProductMixinView(mixins.ListModelMixin,generics.GenericAPIView):
 
+    queryset = TblProduct.objects.all()
+    serializer = ProductSerializer
+    def get(self , request):
+        return self.list(request)
+    
+    # def post()
 
 @api_view(['POST'])
 def api_home(request):
