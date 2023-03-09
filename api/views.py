@@ -77,3 +77,26 @@ def get_alt_view(request,pk=None):
             product_serializer.save(content=content)
             return Response(product_serializer.data)
         return Response({"invalid" :"invalid data"},status=400)
+
+
+class ProductUpdateAPIView(generics.UpdateAPIView):
+    
+    queryset = TblProduct.objects.all()
+    serializer_class = ProductSerializer
+    
+    lookup_field = 'pk'
+
+    def perform_update(self,serializer):
+        instance = serializer.save()
+        if not instance.content:
+            instance.content = instance.title
+
+
+class ProductDestroyAPIView(generics.DestroyAPIView):
+    
+    queryset = TblProduct.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+    def perform_destroy(self,instance):
+        super().perform_destroy(instance)
