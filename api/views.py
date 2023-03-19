@@ -17,7 +17,7 @@ class ProductMixinView(mixins.ListModelMixin,generics.GenericAPIView):
     serializer = ProductSerializer
     def get(self , request):
         return self.list(request)
-    
+     
     # def post()
 
 @api_view(['POST'])
