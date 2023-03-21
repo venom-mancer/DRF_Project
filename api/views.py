@@ -12,13 +12,12 @@ from api.serializers import ProductSerializer
 
 
 class ProductMixinView(mixins.ListModelMixin,generics.GenericAPIView):
-
+    
     queryset = TblProduct.objects.all()
     serializer = ProductSerializer
     def get(self , request):
         return self.list(request)
-     
-    # def post()
+
 
 @api_view(['POST'])
 def api_home(request):

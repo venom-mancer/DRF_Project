@@ -1,6 +1,6 @@
 import requests
 
-endpoint = "http://127.0.0.1:8000/api/1/update/"
+endpoint = "http://127.0.0.1:8000/api/{}/update/".format(id)
 
 data = {
     'title' : 'peak was here',
